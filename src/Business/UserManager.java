@@ -54,4 +54,7 @@ public class UserManager {
     public ArrayList<User> findByRole(String userSearchRole) {
         return userDao.findByRole(userSearchRole);
     }
+    private Object getUser_id(int selectedUserId) {
+        return null;
+    }
 }

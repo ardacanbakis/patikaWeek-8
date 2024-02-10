@@ -18,6 +18,17 @@ public class PensionManager {
         return pensionDao.getById(pensionId);
     }
 
+    public ArrayList<Object[]> getForTable(ArrayList<Pension> pensionList) {
+        ArrayList<Object[]> pensionObjList = new ArrayList<>();
+        for (Pension pension : pensionList) {
+            pensionObjList.add(new Object[]{
+                    pension.getPension_id(),
+                    pension.getHotel_id(),
+                    pension.getType().toString()
+            });
+        }
+        return pensionObjList;
+    }
     public boolean savePension(Pension pension) {
         if (pension.getPension_id() > 0) {
             return pensionDao.update(pension);

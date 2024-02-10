@@ -43,9 +43,6 @@ public class AdminView extends Layout {
         this.user = user;
         add(container);
         guiInitialize(750, 750);
-
-        lbl_welcome.setText("Welcome " + user.getUsername() + "!");
-
         loadUserTable(null);
         LoadUserComponent();
 
@@ -61,13 +58,11 @@ public class AdminView extends Layout {
     }
 
     private void LoadUserComponent() {
-// DOESNT WORK SELECTING ROWS
         tableRowSelect(this.tbl_users);
         btn_save_new_user.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JTextField[] fieldList = {fld_username, fld_password};
-//CALISMIYOR -- fixed
                 if (Helper.isFieldListEmpty(fieldList)) {
                     Helper.showMsg("fill");
                 } else {

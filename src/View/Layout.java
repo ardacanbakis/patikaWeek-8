@@ -19,7 +19,6 @@ public class Layout extends JFrame {
         this.setLocation(Helper.getLocationPoint("x", this.getSize()), Helper.getLocationPoint("y", this.getSize()));
         this.setVisible(true);
     }
-    //needs revision youtube video 12min sutun isimleri arrayi ve satir deg
 
     public void createTable(DefaultTableModel model, JTable table, Object[] columns, ArrayList<Object[]> rows) {
         model.setColumnIdentifiers(columns);
@@ -45,10 +44,15 @@ public class Layout extends JFrame {
         return Integer.parseInt(table.getValueAt(table.getSelectedRow(), index).toString());
     }
 
-    public void tableRowSelect(JTable table) {
-        int selectedRow = table.rowAtPoint(e.getPoint());
-        table.setRowSelectionInterval(selectedRow, selectedRow);
+    public void tableRowSelect(final JTable table) {
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedRow = table.rowAtPoint(e.getPoint());
+                if (selectedRow >= 0) {
+                    table.setRowSelectionInterval(selectedRow, selectedRow);
+                }
+            }
+        });
     }
-
-
 }

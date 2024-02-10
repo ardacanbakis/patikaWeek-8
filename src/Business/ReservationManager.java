@@ -11,6 +11,24 @@ public class ReservationManager {
     public ArrayList<Reservation> findAllReservations() {
         return reservationDao.findAll();
     }
+    public ArrayList<Object[]> getForTable(ArrayList<Reservation> reservationList) {
+        ArrayList<Object[]> reservationObjList = new ArrayList<>();
+        for (Reservation reservation : reservationList) {
+            reservationObjList.add(new Object[]{
+                    reservation.getReservation_id(),
+                    reservation.getRoom_id(),
+                    reservation.getCheck_in_date(),
+                    reservation.getCheck_out_date(),
+                    reservation.getTotal_price(),
+                    reservation.getGuest_count(),
+                    reservation.getGuest_name(),
+                    reservation.getGuest_citizen_id(),
+                    reservation.getGuest_mail(),
+                    reservation.getGuest_phone()
+            });
+        }
+        return reservationObjList;
+    }
 
     public Reservation findReservationById(int reservationId) {
         return reservationDao.getById(reservationId);

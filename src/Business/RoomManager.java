@@ -12,8 +12,28 @@ public class RoomManager {
         this.roomDao = new RoomDao();
     }
 
-
-    public ArrayList<Room> findAllRooms() {
+    public ArrayList<Object[]> getForTable(ArrayList<Room> roomList) {
+        ArrayList<Object[]> roomObjList = new ArrayList<>();
+        for (Room room : roomList) {
+            roomObjList.add(new Object[]{
+                    room.getRoom_id(),
+                    room.getHotel_id(),
+                    room.getType(),
+                    room.getStock(),
+                    room.getAdult_price(),
+                    room.getChild_price(),
+                    room.getBed_capacity(),
+                    room.getSquare_meter(),
+                    room.isTelevision(),
+                    room.isMinibar(),
+                    room.isGame_console(),
+                    room.isSafe(),
+                    room.isProjection()
+            });
+        }
+        return roomObjList;
+    }
+        public ArrayList<Room> findAllRooms() {
         return roomDao.findAll();
     }
 
@@ -42,4 +62,5 @@ public class RoomManager {
         String query = "SELECT * FROM rooms WHERE hotel_id = " + hotelId;
         return roomDao.selectByQuery(query);
     }
+
 }

@@ -26,8 +26,6 @@ public class StaffView  extends Layout{
     private final DefaultTableModel tmdl_reservation = new DefaultTableModel();
     private Object[] col_pension_list;
     private Object[] col_hotel_list;
-    private Object[]
-    private Object[]
 
 
 
@@ -56,55 +54,55 @@ public class StaffView  extends Layout{
         this.user=user;
 //      this.lbl_welcome.setText("Welcome : " + this.user.getUsername());
 
-        loadComponent();
-        loadHotelTable();
-        loadHotelComponent();
-        loadPensionTable(null);
-        loadPensionComponent();
+//        loadComponent();
+//        loadHotelTable();
+//        loadHotelComponent();
+//        loadPensionTable(null);
+//      loadPensionComponent();
     }
-    private void loadPensionTable () {
-        col_pension_list = new Object [] {"Pension id","Hotel name","Pension type"};
-        ArrayList<Object[]> pensionList = this.pensionManager.getForTable(col_pension_list.length,this.pensionManager.findAll());
-
-        createTable(this.tmdl_pension,this.tbl_pension,col_pension_list, pensionList);
-    }
-    private void loadHotelTable() {
-        col_hotel_list = new Object[] {"Hotel id","Hotel name","City","Address",
-                "E-Mail","Phone","Star","Parking","Wifi","Swimming pool","Fitness center",
-                "Concierge","Spa","7/24 Room service",};
-        hotelList = this.hotelManager.getForTable(col_hotel_list.length,this.hotelManager.findAll());
-        createTable(this.tmdl_hotel, this.tbl_hotel, col_hotel_list, hotelList);
-    }
-    private void loadHotelComponent(){
-        tableRowSelect(tbl_hotel);
-        this.hotel_menu = new JPopupMenu();
-        this.hotel_menu.add("Add Pension").addActionListener(e->{
-            PensionView pensionView = new PensionView(new Pension());
-            pensionView.addWindowListener(WindowAdapter) windowClosed(e) -> {
-                loadPensionTable(null);
-            });
-        });
-        this.hotel_menu.add("Add Season").addActionListener(e->) {
-            SeasonView seasonView = new SeasonView();
-            seasonView.addWindowListener(WindowAdapter) windowClosed(e) -> {
-                loadPensionTable(null);
-            });
-        }
-        btn_hotel_add.addActionListener(e -> {
-            HotelView hotelView = new HotelView(new Hotel());
-            hotelView.addWindowListener(WindowAdapter) windowClosed(e) ->{
-                loadHotelTable(null);
-            });
-        });
-        this.tbl_hotel setCommentPopupMenu(hotel_menu);
-    }
-    private void loadComponent() {
-        /// vid 4:10
-    }
-    private void createUiComponents() throws ParseException {
-        this.fld_room_start_date = new JFormattedTextField(new MaskFormatter("##/##/####"));
-        this.fld_room_end_date = new JFormattedTextField(new MaskFormatter("##/##/####"));
-        this.fld_room_start_date.setText("01/01/2023");
-        this.fld_room_end_date.setText("01/01/2023");
-    }
+//    private void loadPensionTable () {
+//        col_pension_list = new Object [] {"Pension id","Hotel name","Pension type"};
+//        ArrayList<Object[]> pensionList = this.pensionManager.getForTable(col_pension_list.length,this.pensionManager.findAll());
+//
+//        createTable(this.tmdl_pension,this.tbl_pension,col_pension_list, pensionList);
+//    }
+//    private void loadHotelTable() {
+//        col_hotel_list = new Object[] {"Hotel id","Hotel name","City","Address",
+//                "E-Mail","Phone","Star","Parking","Wifi","Swimming pool","Fitness center",
+//                "Concierge","Spa","7/24 Room service",};
+//        hotelList = this.hotelManager.getForTable(col_hotel_list.length,this.hotelManager.findAll());
+//        createTable(this.tmdl_hotel, this.tbl_hotel, col_hotel_list, hotelList);
+//    }
+//    private void loadHotelComponent(){
+//        tableRowSelect(tbl_hotel);
+//        this.hotel_menu = new JPopupMenu();
+//        this.hotel_menu.add("Add Pension").addActionListener(e->{
+//            PensionView pensionView = new PensionView(new Pension());
+//            pensionView.addWindowListener(WindowAdapter) windowClosed(e) -> {
+//                loadPensionTable(null);
+//            });
+//        });
+//        this.hotel_menu.add("Add Season").addActionListener(e->) {
+//            SeasonView seasonView = new SeasonView();
+//            seasonView.addWindowListener(WindowAdapter) windowClosed(e) -> {
+//                loadPensionTable(null);
+//            });
+//        }
+//        btn_hotel_add.addActionListener(e -> {
+//            HotelView hotelView = new HotelView(new Hotel());
+//            hotelView.addWindowListener(WindowAdapter) windowClosed(e) ->{
+//                loadHotelTable(null);
+//            });
+//        });
+//        this.tbl_hotel setCommentPopupMenu(hotel_menu);
+//    }
+//    private void loadComponent() {
+//        /// vid 4:10
+//    }
+//    private void createUiComponents() throws ParseException {
+//        this.fld_room_start_date = new JFormattedTextField(new MaskFormatter("##/##/####"));
+//        this.fld_room_end_date = new JFormattedTextField(new MaskFormatter("##/##/####"));
+//        this.fld_room_start_date.setText("01/01/2023");
+//        this.fld_room_end_date.setText("01/01/2023");
+//    }
 }

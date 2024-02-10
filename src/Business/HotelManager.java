@@ -8,6 +8,28 @@ import java.util.ArrayList;
 public class HotelManager {
     private final HotelDao hotelDao = new HotelDao();
 
+    public ArrayList<Object[]> getForTable(ArrayList<Hotel> hotelList) {
+        ArrayList<Object[]> hotelObjList = new ArrayList<>();
+        for (Hotel hotel : hotelList) {
+            hotelObjList.add(new Object[]{
+                    hotel.getHotel_id(),
+                    hotel.getHotel_name(),
+                    hotel.getHotel_address(),
+                    hotel.getHotel_city(),
+                    hotel.getHotel_email(),
+                    hotel.getHotel_phone(),
+                    hotel.getHotel_star_rating(),
+                    hotel.isFree_parking(),
+                    hotel.isFree_wifi(),
+                    hotel.isHotel_concierge(),
+                    hotel.isRoom_service_24_7(),
+                    hotel.isFitness_center(),
+                    hotel.isSpa(),
+                    hotel.isSwimming_pool()
+            });
+        }
+        return hotelObjList;
+    }
     public ArrayList<Hotel> findAllHotels() {
         return hotelDao.findAll();
     }

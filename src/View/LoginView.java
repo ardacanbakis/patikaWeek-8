@@ -28,11 +28,7 @@ public class LoginView extends Layout {
         this.userManager = new UserManager();
         this.add(container);
         guiInitialize(400,400);
-
         loginButton();
-//  JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-//  JOptionPane.showMessageDialog(this, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
-
 
 
     }
