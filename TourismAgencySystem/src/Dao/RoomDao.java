@@ -2,112 +2,118 @@ package Dao;
 
 import Core.Db;
 import Entity.Room;
+
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class RoomDao {
+    private final Connection connection;
 
-    public List<Room> findAll() {
-        List<Room> roomList = new ArrayList<>();
-        String query = "SELECT * FROM rooms";
-
-        try (Connection conn = Db.getInstance();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            while (rs.next()) {
-                Room room = new Room(
-                        rs.getInt("room_id"),
-                        rs.getInt("hotel_id"),
-                        rs.getInt("pension_id"),
-                        rs.getInt("season_id"),
-                        rs.getString("type"),
-                        rs.getInt("stock"),
-                        rs.getDouble("adult_price"),
-                        rs.getDouble("child_price"),
-                        rs.getInt("bed_capacity"),
-                        rs.getInt("square_meter"),
-                        rs.getBoolean("television"),
-                        rs.getBoolean("game_console"),
-                        rs.getBoolean("safe_box"),
-                        rs.getBoolean("projection")
-                );
-                roomList.add(room);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return roomList;
+    public RoomDao() {
+        this.connection = Db.getInstance();
     }
 
-    public boolean addRoom(Room room) {
-        String query = "INSERT INTO rooms (hotel_id, pension_id, season_id, type, stock, adult_price, child_price, bed_capacity, square_meter, television, game_console, safe_box, projection) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public ArrayList<Room> findAll() {
+        return this.selectByQuery("SELECT * FROM rooms");
+    }
 
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, room.getHotelId());
-            pstmt.setInt(2, room.getPensionId());
-            pstmt.setInt(3, room.getSeasonId());
-            pstmt.setString(4, room.getType());
-            pstmt.setInt(5, room.getStock());
-            pstmt.setDouble(6, room.getAdultPrice());
-            pstmt.setDouble(7, room.getChildPrice());
-            pstmt.setInt(8, room.getBedCapacity());
-            pstmt.setInt(9, room.getSquareMeter());
-            pstmt.setBoolean(10, room.isTelevision());
-            pstmt.setBoolean(11, room.isGameConsole());
-            pstmt.setBoolean(12, room.isSafeBox());
-            pstmt.setBoolean(13, room.isProjection());
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+    public Room getById(int id) {
+        Room room = null;
+        String query = "SELECT * FROM rooms WHERE room_id = ?";
+        try (PreparedStatement pr = this.connection.prepareStatement(query)) {
+            pr.setInt(1, id);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()) {
+                room = match(rs);
+            }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return room;
+    }
+
+    public ArrayList<Room> selectByQuery(String query) {
+        ArrayList<Room> rooms = new ArrayList<>();
+        try (PreparedStatement pr = this.connection.prepareStatement(query);
+             ResultSet rs = pr.executeQuery()) {
+            while (rs.next()) {
+                rooms.add(match(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rooms;
+    }
+
+    public boolean save(Room room) {
+        String query = "INSERT INTO rooms (hotel_id, type, stock, adult_price, child_price, bed_capacity, square_meter, television, game_console, safe, projection) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = this.connection.prepareStatement(query)) {
+            pstmt.setInt(1, room.getHotel_id());
+            pstmt.setString(2, room.getType());
+            pstmt.setInt(3, room.getStock());
+            pstmt.setDouble(4, room.getAdult_price());
+            pstmt.setDouble(5, room.getChild_price());
+            pstmt.setInt(6, room.getBed_capacity());
+            pstmt.setInt(7, room.getSquare_meter());
+            pstmt.setBoolean(8, room.isTelevision());
+            pstmt.setBoolean(9, room.isGame_console());
+            pstmt.setBoolean(10, room.isSafe());
+            pstmt.setBoolean(11, room.isProjection());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
 
     public boolean updateRoom(Room room) {
-        String query = "UPDATE rooms SET hotel_id = ?, pension_id = ?, season_id = ?, type = ?, stock = ?, adult_price = ?, child_price = ?, bed_capacity = ?, square_meter = ?, television = ?, game_console = ?, safe_box = ?, projection = ? WHERE room_id = ?";
-
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, room.getHotelId());
-            pstmt.setInt(2, room.getPensionId());
-            pstmt.setInt(3, room.getSeasonId());
-            pstmt.setString(4, room.getType());
-            pstmt.setInt(5, room.getStock());
-            pstmt.setDouble(6, room.getAdultPrice());
-            pstmt.setDouble(7, room.getChildPrice());
-            pstmt.setInt(8, room.getBedCapacity());
-            pstmt.setInt(9, room.getSquareMeter());
-            pstmt.setBoolean(10, room.isTelevision());
-            pstmt.setBoolean(11, room.isGameConsole());
-            pstmt.setBoolean(12, room.isSafeBox());
-            pstmt.setBoolean(13, room.isProjection());
-            pstmt.setInt(14, room.getRoomId());
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+        String query = "UPDATE rooms SET hotel_id = ?, type = ?, stock = ?, adult_price = ?, child_price = ?, bed_capacity = ?, square_meter = ?, television = ?, game_console = ?, safe = ?, projection = ? WHERE room_id = ?";
+        try (PreparedStatement pstmt = this.connection.prepareStatement(query)) {
+            pstmt.setInt(1, room.getHotel_id());
+            pstmt.setString(2, room.getType());
+            pstmt.setInt(3, room.getStock());
+            pstmt.setDouble(4, room.getAdult_price());
+            pstmt.setDouble(5, room.getChild_price());
+            pstmt.setInt(6, room.getBed_capacity());
+            pstmt.setInt(7, room.getSquare_meter());
+            pstmt.setBoolean(8, room.isTelevision());
+            pstmt.setBoolean(9, room.isGame_console());
+            pstmt.setBoolean(10, room.isSafe());
+            pstmt.setBoolean(11, room.isProjection());
+            pstmt.setInt(12, room.getRoom_id());
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
 
     public boolean deleteRoom(int roomId) {
         String query = "DELETE FROM rooms WHERE room_id = ?";
-
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
+        try (PreparedStatement pstmt = this.connection.prepareStatement(query)) {
             pstmt.setInt(1, roomId);
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             return false;
         }
+    }
+
+    private Room match(ResultSet rs) throws SQLException {
+        return new Room(
+                rs.getInt("room_id"),
+                rs.getInt("hotel_id"),
+                rs.getString("type"),
+                rs.getInt("stock"),
+                rs.getDouble("adult_price"),
+                rs.getDouble("child_price"),
+                rs.getInt("bed_capacity"),
+                rs.getInt("square_meter"),
+                rs.getBoolean("television"),
+                rs.getBoolean("minibar"),
+                rs.getBoolean("game_console"),
+                rs.getBoolean("safe"),
+                rs.getBoolean("projection")
+        );
     }
 }

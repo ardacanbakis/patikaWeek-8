@@ -2,28 +2,25 @@ package Business;
 
 import Dao.ReservationDao;
 import Entity.Reservation;
-import java.util.List;
+
+import java.util.ArrayList;
 
 public class ReservationManager {
-    private final ReservationDao reservationDao;
+    private final ReservationDao reservationDao = new ReservationDao();
 
-    public ReservationManager() {
-        reservationDao = new ReservationDao();
-    }
-
-    public List<Reservation> getAllReservations() {
+    public ArrayList<Reservation> findAllReservations() {
         return reservationDao.findAll();
     }
 
-    public boolean addReservation(Reservation reservation) {
-        return reservationDao.addReservation(reservation);
+    public Reservation findReservationById(int reservationId) {
+        return reservationDao.getById(reservationId);
     }
 
-    public boolean updateReservation(Reservation reservation) {
-        return reservationDao.updateReservation(reservation);
+    public boolean saveReservation(Reservation reservation) {
+        return reservationDao.save(reservation);
     }
 
     public boolean deleteReservation(int reservationId) {
-        return reservationDao.deleteReservation(reservationId);
+        return reservationDao.delete(reservationId);
     }
 }

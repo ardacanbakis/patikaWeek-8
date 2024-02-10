@@ -1,63 +1,116 @@
 package View;
 
+import Business.*;
+import Entity.Hotel;
+import Entity.Pension;
 import Entity.User;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
+import java.awt.event.WindowAdapter;
+import java.text.ParseException;
+import java.util.ArrayList;
 
-public class StaffView extends JFrame {
-    private JTable roomsTable;
-    private JButton btnAddRoom, btnEditRoom, btnDeleteRoom, btnManageReservations;
-    private DefaultTableModel roomsTableModel;
+public class StaffView  extends Layout{
 
-    public StaffView(User loginUser) {
-        setTitle("Staff Room and Reservation Management");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(800, 500);
-        setLayout(new BorderLayout(10, 10));
-        initializeUI();
-        Layout.centerWindow(this);
-        setVisible(true);
-    }
+    private User user;
+    private UserManager userManager;
+    private final HotelManager hotelManager;
+    private final PensionManager pensionManager;
+    private final SeasonManager seasonManager;
+    private RoomManager roomManager;
+    private ReservationManager reservationManager;
+    private final DefaultTableModel tmdl_hotel = new DefaultTableModel();
+    private final DefaultTableModel tmdl_pension = new DefaultTableModel();
+    private final DefaultTableModel tmdl_season = new DefaultTableModel();
+    private final DefaultTableModel tmdl_room = new DefaultTableModel();
+    private final DefaultTableModel tmdl_reservation = new DefaultTableModel();
 
-    private void initializeUI() {
-        roomsTableModel = new DefaultTableModel(new Object[]{"Room ID", "Hotel ID", "Type", "Price", "Amenities"}, 0);
-        roomsTable = new JTable(roomsTableModel);
-        add(new JScrollPane(roomsTable), BorderLayout.CENTER);
 
-        JPanel buttonsPanel = new JPanel();
-        btnAddRoom = Layout.createButton("Add Room", "ADD_ROOM", this::addRoom);
-        btnEditRoom = Layout.createButton("Edit Room", "EDIT_ROOM", this::editRoom);
-        btnDeleteRoom = Layout.createButton("Delete Room", "DELETE_ROOM", this::deleteRoom);
-        btnManageReservations = Layout.createButton("Manage Reservations", "MANAGE_RESERVATIONS", this::manageReservations);
+    private JPanel container;
+    private JPanel pnl_top;
+    private JPanel pnl_bottom;
+    private JTabbedPane tabbedPane1;
+    private JPanel pnl_hotel_manager;
+    private JPanel pnl_room_manager;
+    private JPanel pnl_reservations_manager;
+    private JTable tbl_hotel_manager;
+    private JButton button1;
+    private JButton button2;
+    private JTable tbl_hotel_manager_pensions;
+    private JTable tbl_hotel_manager_seasons;
+    private JButton btn_hotel_add;
+    private JButton btn_add_hotel;
 
-        buttonsPanel.add(btnAddRoom);
-        buttonsPanel.add(btnEditRoom);
-        buttonsPanel.add(btnDeleteRoom);
-        buttonsPanel.add(btnManageReservations);
+    public StaffView(User user) {
+        this.userManager = new UserManager();
+        this.hotelManager = new HotelManager();
+        this.pensionManager = new PensionManager();
+        this.seasonManager = new SeasonManager();
+        this.roomManager = new RoomManager();
+        this.reservationManager = new ReservationManager();
+        this.lineChart = new LineChart();
+        this.add(container);
+        guiInitialize(600,600);
+        this.user=user;
+        this.lbl_welcome.setText("Welcome : " + this.user.getUsername());
 
-        add(buttonsPanel, BorderLayout.SOUTH);
-    }
+        //
+        loadComponent();
+        //
+        loadHotelTable(null);
+        loadHotelComponent();
 
-    private void addRoom(ActionEvent e) {
-        // Open dialog or another frame to add room details
-        // Save the room to the database and refresh the room list
-    }
+        //
+        loadPensionTable(null);
+        loadPensionComponent();
 
-    private void editRoom(ActionEvent e) {
-        // Determine selected room from the table
-        // Open dialog or frame pre-populated with room details for editing
-        // Update room in the database and refresh the room list
-    }
-
-    private void deleteRoom(ActionEvent e) {
-        // Confirm deletion
-        // If confirmed, delete the selected room from the database and refresh the list
-    }
-
-    private void manageReservations(ActionEvent e) {
-        // Open the reservation management view/dialog
+        private void loadPensionTable (ArrayList<Object[]> pensionList) {
+            col_pension_list = new Object [] {"Pension id","Hotel name","Pension type"};
+            if (pensionList == null){
+                pensionList = this.pensionManager.getForTable(col_pension_list.length,this.pensionManager.findAll());
+            }
+            createTable(this.tmdl_pension,this.tbl_pension,col_pension_list, pensionList);
+        }
+        private void loadHotelTable(Arraylist<Object[]> hotelList) {
+            col_hotel_list = new Object[] {"Hotel id","Hotel name","City","Address",
+                    "E-Mail","Phone","Star","Parking","Wifi","Swimming pool","Fitness center",
+                    "Concierge","Spa","7/24 Room service",};
+            hotelList = this.hotelManager.getForTable(col_hotel_list.length,this.hotelManager.findAll());
+            createTable(this.tmdl_hotel, this.tbl_hotel, col_hotel_list, hotelList);
+        }
+        private void loadHotelComponent(){
+            tableRowSelect(tbl_hotel);
+            this.hotel_menu = new JPopupMenu();
+            this.hotel_menu.add("Add Pension").addActionListener(e->{
+                PensionView pensionView = new PensionView(new Pension());
+                pensionView.addWindowListener(WindowAdapter) windowClosed(e) -> {
+                    loadPensionTable(null);
+                });
+            });
+        this.hotel_menu.add("Add Season").addActionListener(e->) {
+            SeasonView seasonView = new SeasonView();
+            seasonView.addWindowListener(WindowAdapter) windowClosed(e) -> {
+                    loadPensionTable(null);
+                });
+            }
+        btn_hotel_add.addActionListener(e -> {
+            HotelView hotelView = new HotelView(new Hotel());
+            hotelView.addWindowListener(WindowAdapter) windowClosed(e) ->{
+                    loadHotelTable(null);
+            });
+        });
+        this.tbl_hotel setCommentPopupMenu(hotel_menu);
+        }
+        private void loadComponent() {
+            /// vid 4:10
+        }
+        private void createUiComponents() throws ParseException {
+            this.fld_room_start_date = new JFormattedTextField(new MaskFormatter("##/##/####"));
+            this.fld_room_end_date = new JFormattedTextField(new MaskFormatter("##/##/####"));
+            this.fld_room_start_date.setText("01/01/2023");
+            this.fld_room_end_date.setText("01/01/2023");
+        }
     }
 }

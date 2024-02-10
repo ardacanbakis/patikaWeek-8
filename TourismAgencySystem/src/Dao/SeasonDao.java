@@ -2,77 +2,85 @@ package Dao;
 
 import Core.Db;
 import Entity.Season;
+
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SeasonDao {
+    private final Connection connection = Db.getInstance();
 
-    public List<Season> findAll() {
-        List<Season> seasonList = new ArrayList<>();
+    public ArrayList<Season> findAll() {
+        ArrayList<Season> seasons = new ArrayList<>();
         String query = "SELECT * FROM seasons";
-
-        try (Connection conn = Db.getInstance();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
+        try (PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                Season season = new Season(rs.getInt("season_id"), rs.getInt("hotel_id"), rs.getDate("start_date"), rs.getDate("end_date"));
-                seasonList.add(season);
+                seasons.add(match(rs));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        return seasonList;
+        return seasons;
     }
 
-    public boolean addSeason(Season season) {
+    public Season getById(int seasonId) {
+        String query = "SELECT * FROM seasons WHERE season_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, seasonId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return match(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean save(Season season) {
         String query = "INSERT INTO seasons (hotel_id, start_date, end_date) VALUES (?, ?, ?)";
-
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, season.getHotelId());
-            pstmt.setDate(2, season.getStartDate());
-            pstmt.setDate(3, season.getEndDate());
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, season.getHotel_id());
+            stmt.setDate(2, Date.valueOf(season.getStart_date()));
+            stmt.setDate(3, Date.valueOf(season.getEnd_date()));
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
 
-    public boolean updateSeason(Season season) {
+    public boolean update(Season season) {
         String query = "UPDATE seasons SET hotel_id = ?, start_date = ?, end_date = ? WHERE season_id = ?";
-
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, season.getHotelId());
-            pstmt.setDate(2, season.getStartDate());
-            pstmt.setDate(3, season.getEndDate());
-            pstmt.setInt(4, season.getSeasonId());
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, season.getHotel_id());
+            stmt.setDate(2, Date.valueOf(season.getStart_date()));
+            stmt.setDate(3, Date.valueOf(season.getEnd_date()));
+            stmt.setInt(4, season.getSeason_id());
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
 
-    public boolean deleteSeason(int seasonId) {
+    public boolean delete(int seasonId) {
         String query = "DELETE FROM seasons WHERE season_id = ?";
-
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, seasonId);
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, seasonId);
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             return false;
         }
+    }
+
+    private Season match(ResultSet rs) throws SQLException {
+        return new Season(
+                rs.getInt("season_id"),
+                rs.getInt("hotel_id"),
+                rs.getDate("start_date").toLocalDate(),
+                rs.getDate("end_date").toLocalDate()
+        );
     }
 }

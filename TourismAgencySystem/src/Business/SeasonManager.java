@@ -2,30 +2,29 @@ package Business;
 
 import Dao.SeasonDao;
 import Entity.Season;
-import java.util.List;
+
+import java.util.ArrayList;
 
 public class SeasonManager {
-    private SeasonDao seasonDao;
+    private final SeasonDao seasonDao = new SeasonDao();
 
-    public SeasonManager() {
-        seasonDao = new SeasonDao();
-    }
-
-    public List<Season> getAllSeasons() {
+    public ArrayList<Season> findAllSeasons() {
         return seasonDao.findAll();
     }
 
-    public boolean addSeason(Season season) {
-        // Validate season data
-        return seasonDao.addSeason(season);
+    public Season findSeasonById(int seasonId) {
+        return seasonDao.getById(seasonId);
     }
 
-    public boolean updateSeason(Season season) {
-        // Validate season data
-        return seasonDao.updateSeason(season);
+    public boolean saveSeason(Season season) {
+        if (season.getSeason_id() > 0) {
+            return seasonDao.update(season);
+        } else {
+            return seasonDao.save(season);
+        }
     }
 
     public boolean deleteSeason(int seasonId) {
-        return seasonDao.deleteSeason(seasonId);
+        return seasonDao.delete(seasonId);
     }
 }

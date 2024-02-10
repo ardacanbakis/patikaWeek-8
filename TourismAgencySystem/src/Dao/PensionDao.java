@@ -2,87 +2,82 @@ package Dao;
 
 import Core.Db;
 import Entity.Pension;
+import Entity.Pension.PensionType;
+
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class PensionDao {
+    private final Connection connection = Db.getInstance();
 
-    public List<Pension> findAll() {
-        List<Pension> pensionList = new ArrayList<>();
+    public ArrayList<Pension> findAll() {
+        ArrayList<Pension> pensions = new ArrayList<>();
         String query = "SELECT * FROM pensions";
-
-        try (Connection conn = Db.getInstance();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
+        try (PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                Pension pension = new Pension(rs.getInt("pension_id"), rs.getString("type"));
-                pensionList.add(pension);
+                Pension pension = new Pension(
+                        rs.getInt("pension_id"),
+                        rs.getInt("hotel_id"),
+                        PensionType.valueOf(rs.getString("type"))
+                );
+                pensions.add(pension);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        return pensionList;
-    }
-    public void initializePensionTypes() {
-        List<String> pensionTypes = Arrays.asList(
-                "Ultra All Inclusive",
-                "All Inclusive",
-                "Full credit excluding alcohol",
-                "Room Breakfast",
-                "Full Pension",
-                "Half Board",
-                "Bed Only"
-        );
-
-        for (String type : pensionTypes) {
-            addPension(new Pension(type));
-        }
+        return pensions;
     }
 
-    public void addPension(Pension pension) {
-        String query = "INSERT INTO pensions (type) VALUES (?)";
-
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, pension.getType());
-            int affectedRows = pstmt.executeUpdate();
+    public Pension getById(int pensionId) {
+        String query = "SELECT * FROM pensions WHERE pension_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, pensionId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Pension(
+                        rs.getInt("pension_id"),
+                        rs.getInt("hotel_id"),
+                        PensionType.valueOf(rs.getString("type"))
+                );
+            }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
+        return null;
     }
 
-
-    public boolean updatePension(Pension pension) {
-        String query = "UPDATE pensions SET type = ? WHERE pension_id = ?";
-
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, pension.getType());
-            pstmt.setInt(2, pension.getPensionId());
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+    public boolean save(Pension pension) {
+        String query = "INSERT INTO pensions (hotel_id, type) VALUES (?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, pension.getHotel_id());
+            stmt.setString(2, pension.getType().name());
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
 
-    public boolean deletePension(int pensionId) {
-        String query = "DELETE FROM pensions WHERE pension_id = ?";
-
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, pensionId);
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+    public boolean update(Pension pension) {
+        String query = "UPDATE pensions SET hotel_id = ?, type = ? WHERE pension_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, pension.getHotel_id());
+            stmt.setString(2, pension.getType().name());
+            stmt.setInt(3, pension.getPension_id());
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean delete(int pensionId) {
+        String query = "DELETE FROM pensions WHERE pension_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, pensionId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }

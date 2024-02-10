@@ -1,76 +1,107 @@
 package Dao;
 
 import Core.Db;
+import Core.Helper;
 import Entity.User;
-import java.sql.*;
+
+import javax.xml.transform.Result;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class UserDao {
+    private final Connection con;
 
-    // ... other methods ...
+    public UserDao() {
+        this.con = Db.getInstance();
+    }
 
-    public List<User> findUsersByRole(String role) {
-        List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE role = ?";
-
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, role);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    User user = new User(
-                            rs.getInt("user_id"),
-                            rs.getString("username"),
-                            rs.getString("password"),
-                            rs.getString("role"));
-                    users.add(user);
-                }
+    public ArrayList<User> findAll() {
+        ArrayList<User> userList = new ArrayList<>();
+        String sql = "Select * FROM users";
+        try {
+            ResultSet rs = this.con.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                userList.add(this.match(rs));
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
-        return users;
+        return userList;
+    }
+
+    public ArrayList<User> findByRole(String userSearchRole) {
+        ArrayList<User> userList = new ArrayList<>();
+        String query = "SELECT * FROM users WHERE role =" + "'" + userSearchRole + "'";
+
+        try {
+
+            ResultSet rs = this.con.createStatement().executeQuery(query);
+            while (rs.next()) {
+                userList.add(this.match(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userList;
+
     }
 
     public User findByLogin(String username, String password) {
-        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return new User(
-                            rs.getInt("user_id"),
-                            rs.getString("username"),
-                            rs.getString("password"),
-                            rs.getString("role"));
-                }
+        User obj = null;
+        String query = "SELECT user_id, username, password, role FROM users WHERE username = ? AND password = ?";
+        try {
+            PreparedStatement pr = this.con.prepareStatement(query);
+            pr.setString(1, username);
+            pr.setString(2, password);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()) {
+                obj = this.match(rs);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
-        return null;
+        return obj;
     }
 
-    public List<User> findAll() {
-        return null;
+    public boolean save(User newUser) {
+        String query = "INSERT INTO users (username, password, role) VALUES (?,?,?)";
+        try{
+            PreparedStatement pr = this.con.prepareStatement(query);
+            pr.setString(1,newUser.getUsername());
+            pr.setString(2,newUser.getPassword());
+            pr.setString(3,newUser.getRole());
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+
     }
 
-    public boolean addUser(User user) {
-        return false;
+    public User match(ResultSet rs) throws SQLException {
+        User obj = new User();
+        obj.setUser_id(rs.getInt("user_id"));
+        obj.setUsername(rs.getString("username"));
+        obj.setPassword(rs.getString("password"));
+        obj.setRole(rs.getString("role"));
+        return obj;
     }
 
-    public boolean updateUser(User user) {
-        return false;
+
+    public boolean delete(int selectedUserId) {
+        String query = "DELETE FROM users WHERE user_id = ?";
+        try {
+            PreparedStatement pr = con.prepareStatement(query);
+            pr.setInt(1,selectedUserId);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return true;
     }
 
-    public boolean deleteUser(int userId) {
-        return false;
-    }
+
 }

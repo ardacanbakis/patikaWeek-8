@@ -1,48 +1,50 @@
 package Business;
 
-import Core.Db;
 import Dao.PensionDao;
 import Entity.Pension;
+import Entity.Pension.PensionType;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class PensionManager {
-    private PensionDao pensionDao;
+    private final PensionDao pensionDao = new PensionDao();
 
-    public PensionManager() {
-        pensionDao = new PensionDao();
-    }
-
-    public List<Pension> getAllPensions() {
+    public ArrayList<Pension> findAllPensions() {
         return pensionDao.findAll();
     }
 
-    public boolean addPension(Pension pension) {
-        String query = "INSERT INTO pensions (type) VALUES (?)";
+    public Pension findPensionById(int pensionId) {
+        return pensionDao.getById(pensionId);
+    }
 
-        try (Connection conn = Db.getInstance();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, pension.getType()); // Set the pension type parameter
-            int affectedRows = pstmt.executeUpdate(); // Execute the insert operation
-            return affectedRows > 0; // Return true if the operation was successful
-        } catch (SQLException e) {
-            System.out.println("Error Adding Pension: " + e.getMessage());
-            return false; // Return false if any SQLException occurs
-
+    public boolean savePension(Pension pension) {
+        if (pension.getPension_id() > 0) {
+            return pensionDao.update(pension);
+        } else {
+            return pensionDao.save(pension);
         }
     }
 
-
-    public boolean updatePension(Pension pension) {
-        // Validate pension data
-        return pensionDao.updatePension(pension);
+    public boolean deletePension(int pensionId) {
+        return pensionDao.delete(pensionId);
     }
 
-    public boolean deletePension(int pensionId) {
-        return pensionDao.deletePension(pensionId);
+    // Finds all pension types available for a specific hotel
+    public ArrayList<Pension> findPensionsByHotelId(int hotelId) {
+        ArrayList<Pension> allPensions = pensionDao.findAll();
+        return allPensions.stream()
+                .filter(pension -> pension.getHotel_id() == hotelId)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    // Updates the pension type of a specific pension record
+    public boolean updatePensionType(int pensionId, PensionType newType) {
+        Pension pension = findPensionById(pensionId);
+        if (pension != null) {
+            pension.setType(newType);
+            return pensionDao.update(pension);
+        }
+        return false;
     }
 }

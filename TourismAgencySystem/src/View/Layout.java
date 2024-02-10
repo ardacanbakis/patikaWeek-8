@@ -1,90 +1,54 @@
 package View;
 
+import Core.Helper;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 
-public class Layout {
+public class Layout extends JFrame {
 
 
-    public static void setMargin(JComponent component, int margin) {
-        component.setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
+    public void guiInitialize(int width, int height) {
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setTitle("Reservation System");
+        this.setSize(width, height);
+        this.setLocation(Helper.getLocationPoint("x", this.getSize()), Helper.getLocationPoint("y", this.getSize()));
+        this.setVisible(true);
     }
+    //needs revision youtube video 12min sutun isimleri arrayi ve satir deg
 
+    public void createTable(DefaultTableModel model, JTable table, Object[] columns, ArrayList<Object[]> rows) {
+        model.setColumnIdentifiers(columns);
+        table.setModel(model);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.getColumnModel().getColumn(0).setMaxWidth(50);
+        table.setEnabled(false);
 
-    public static JButton createButton(String text, String actionCommand, ActionListener listener) {
-        JButton button = new JButton(text);
-        button.setActionCommand(actionCommand);
-        button.addActionListener(listener);
-        return button;
-    }
+        DefaultTableModel clearModel = (DefaultTableModel) table.getModel();
+        clearModel.setRowCount(0);
 
+        if (rows == null) {
+            rows = new ArrayList<>();
+        }
 
-    public static JLabel createLabel(String text) {
-        JLabel label = new JLabel(text);
+        for (Object[] row : rows) {
+            model.addRow(row);
 
-        return label;
-    }
-
-
-    public static JTextField createTextField(int columns) {
-        JTextField textField = new JTextField(columns);
-
-        return textField;
-    }
-
-
-    public static JCheckBox createCheckBox(String text) {
-        JCheckBox checkBox = new JCheckBox(text);
-
-        return checkBox;
-    }
-
-
-    public static void centerWindow(JFrame frame) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
-    }
-
-
-    public static JTable createTable(DefaultTableModel model) {
-        JTable table = new JTable(model);
-
-        table.setFillsViewportHeight(true);
-        return table;
-    }
-
-
-    public static void resetTextFields(Container container) {
-        for (Component c : container.getComponents()) {
-            if (c instanceof JTextField) {
-                ((JTextField) c).setText("");
-            }
         }
     }
 
-
-    public static <T> JComboBox<T> createComboBox(T[] items) {
-        JComboBox<T> comboBox = new JComboBox<>(items);
-        return comboBox;
+    public int getTableSelectedRow(JTable table, int index) {
+        return Integer.parseInt(table.getValueAt(table.getSelectedRow(), index).toString());
     }
 
-    protected void add(JPanel container) {
+    public void tableRowSelect(JTable table) {
+        int selectedRow = table.rowAtPoint(e.getPoint());
+        table.setRowSelectionInterval(selectedRow, selectedRow);
     }
 
-    protected void guiInitilaze(int i, int i1) {
-    }
 
-    protected void setSize(int i, int i1) {
-    }
-
-    protected void setLocationRelativeTo(Object o) {
-    }
-    void setVisible(boolean b) {
-    }
-
-    private void dispose() {
-    }
 }

@@ -1,68 +1,142 @@
 package Entity;
 
 public class Room {
-    private int roomId;
-    private int hotelId;
-    private int pensionId;
-    private int seasonId;
+    private int room_id;
+    private int hotel_id; // Link to a specific hotel
     private String type;
     private int stock;
-    private double adultPrice;
-    private double childPrice;
-    private int bedCapacity;
-    private int squareMeter;
+    private double adult_price;
+    private double child_price;
+    private int bed_capacity;
+    private int square_meter;
     private boolean television;
-    private boolean gameConsole;
-    private boolean safeBox;
+    private boolean minibar;
+    private boolean game_console;
+    private boolean safe;
     private boolean projection;
 
-    // Constructor
-    public Room(int roomId, int hotelId, int pensionId, int seasonId, String type, int stock, double adultPrice, double childPrice, int bedCapacity, int squareMeter, boolean television, boolean gameConsole, boolean safeBox, boolean projection) {
-        this.roomId = roomId;
-        this.hotelId = hotelId;
-        this.pensionId = pensionId;
-        this.seasonId = seasonId;
+    public Room(int room_id, int hotel_id, String type, int stock, double adult_price, double child_price,
+                int bed_capacity, int square_meter, boolean television, boolean minibar,
+                boolean game_console, boolean safe, boolean projection) {
+        this.room_id = room_id;
+        this.hotel_id = hotel_id;
         this.type = type;
         this.stock = stock;
-        this.adultPrice = adultPrice;
-        this.childPrice = childPrice;
-        this.bedCapacity = bedCapacity;
-        this.squareMeter = squareMeter;
+        this.adult_price = adult_price;
+        this.child_price = child_price;
+        this.bed_capacity = bed_capacity;
+        this.square_meter = square_meter;
         this.television = television;
-        this.gameConsole = gameConsole;
-        this.safeBox = safeBox;
+        this.minibar = minibar;
+        this.game_console = game_console;
+        this.safe = safe;
+        this.projection = projection;
+
+    }
+
+    // Getters and setters
+    public int getRoom_id() {
+        return room_id;
+    }
+
+    public void setRoom_id(int room_id) {
+        this.room_id = room_id;
+    }
+
+    public int getHotel_id() {
+        return hotel_id;
+    }
+
+    public void setHotel_id(int hotel_id) {
+        this.hotel_id = hotel_id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public double getAdult_price() {
+        return adult_price;
+    }
+
+    public void setAdult_price(double adult_price) {
+        this.adult_price = adult_price;
+    }
+
+    public double getChild_price() {
+        return child_price;
+    }
+
+    public void setChild_price(double child_price) {
+        this.child_price = child_price;
+    }
+
+    public int getBed_capacity() {
+        return bed_capacity;
+    }
+
+    public void setBed_capacity(int bed_capacity) {
+        this.bed_capacity = bed_capacity;
+    }
+
+    public int getSquare_meter() {
+        return square_meter;
+    }
+
+    public void setSquare_meter(int square_meter) {
+        this.square_meter = square_meter;
+    }
+
+    public boolean isTelevision() {
+        return television;
+    }
+
+    public void setTelevision(boolean television) {
+        this.television = television;
+    }
+
+    public boolean isMinibar() {
+        return minibar;
+    }
+
+    public void setMinibar(boolean minibar) {
+        this.minibar = minibar;
+    }
+
+    public boolean isGame_console() {
+        return game_console;
+    }
+
+    public void setGame_console(boolean game_console) {
+        this.game_console = game_console;
+    }
+
+    public boolean isSafe() {
+        return safe;
+    }
+
+    public void setSafe(boolean safe) {
+        this.safe = safe;
+    }
+
+    public boolean isProjection() {
+        return projection;
+    }
+
+    public void setProjection(boolean projection) {
         this.projection = projection;
     }
 
-    // Getters
-    public int getRoomId() { return roomId; }
-    public int getHotelId() { return hotelId; }
-    public int getPensionId() { return pensionId; }
-    public int getSeasonId() { return seasonId; }
-    public String getType() { return type; }
-    public int getStock() { return stock; }
-    public double getAdultPrice() { return adultPrice; }
-    public double getChildPrice() { return childPrice; }
-    public int getBedCapacity() { return bedCapacity; }
-    public int getSquareMeter() { return squareMeter; }
-    public boolean isTelevision() { return television; }
-    public boolean isGameConsole() { return gameConsole; }
-    public boolean isSafeBox() { return safeBox; }
-    public boolean isProjection() { return projection; }
-
-    // Setters
-    public void setRoomId(int roomId) { this.roomId = roomId; }
-    public void setHotelId(int hotelId) { this.hotelId = hotelId; }
-    public void setPensionId(int pensionId) { this.pensionId = pensionId; }
-    public void setSeasonId(int seasonId) { this.seasonId = seasonId; }
-    public void setType(String type) { this.type = type; }
-    public void setStock(int stock) { this.stock = stock; }
-    public void setAdultPrice(double adultPrice) { this.adultPrice = adultPrice; }
-    public void setChildPrice(double childPrice) { this.childPrice = childPrice; }
-    public void setBedCapacity(int bedCapacity) { this.bedCapacity = bedCapacity; }
-    public void setSquareMeter(int squareMeter) { this.squareMeter = squareMeter; }
-    public void setTelevision(boolean television) { this.television = television; }
-    public void setGameConsole(boolean gameConsole) { this.gameConsole = gameConsole; }
-    public void setSafeBox(boolean safeBox) { this.safeBox = safeBox; }
-    public void setProjection(boolean projection) { this.projection = projection; }
 }
