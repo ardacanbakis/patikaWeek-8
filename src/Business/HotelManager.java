@@ -27,7 +27,4 @@ public class HotelManager {
     public boolean deleteHotel(int hotelId) {
         return hotelDao.delete(hotelId);
     }
-
-    // Additional methods for business logic as needed
-    // Example: filtering hotels by city, star rating, or available amenities
 }

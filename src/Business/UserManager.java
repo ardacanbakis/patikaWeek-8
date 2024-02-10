@@ -44,10 +44,10 @@ public class UserManager {
     }
 
     public boolean delete(int selectedUserId) {
-//        if (this.getUser_id(selectedUserId) == null){
-//            Helper.showMsg(selectedUserId+ "Couldn't be found.");
-//            return false;
-//        }
+        if (this.getUser_id(selectedUserId) == null){
+            Helper.showMsg(selectedUserId+ "Couldn't be found.");
+            return false;
+        }
         return userDao.delete(selectedUserId);
     }
 

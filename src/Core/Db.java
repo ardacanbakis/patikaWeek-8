@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class Db {
     private static Db instance = null;
     private Connection connection = null;
-    private final String DB_URL = "jdbc:postgresql://localhost:5433/TravelAgencyDatabase";
+    private final String DB_URL = "jdbc:postgresql://localhost:5433/TravelDb";
     private final String DB_USER = "postgres";
     private final String DB_PASSWORD = "postgres";
 

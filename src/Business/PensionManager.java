@@ -30,7 +30,7 @@ public class PensionManager {
         return pensionDao.delete(pensionId);
     }
 
-    // Finds all pension types available for a specific hotel
+
     public ArrayList<Pension> findPensionsByHotelId(int hotelId) {
         ArrayList<Pension> allPensions = pensionDao.findAll();
         return allPensions.stream()
@@ -38,7 +38,7 @@ public class PensionManager {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    // Updates the pension type of a specific pension record
+
     public boolean updatePensionType(int pensionId, PensionType newType) {
         Pension pension = findPensionById(pensionId);
         if (pension != null) {

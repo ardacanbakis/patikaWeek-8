@@ -13,7 +13,8 @@ public class PensionDao {
     public ArrayList<Pension> findAll() {
         ArrayList<Pension> pensions = new ArrayList<>();
         String query = "SELECT * FROM pensions";
-        try (PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Pension pension = new Pension(
                         rs.getInt("pension_id"),

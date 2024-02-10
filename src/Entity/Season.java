@@ -8,8 +8,6 @@ public class Season {
     private LocalDate start_date;
     private LocalDate end_date;
 
-    public Season() {}
-
     public Season(int season_id, int hotel_id, LocalDate start_date, LocalDate end_date) {
         this.season_id = season_id;
         this.hotel_id = hotel_id;
@@ -17,13 +15,12 @@ public class Season {
         this.end_date = end_date;
     }
 
-    // Getters
+    // Getters and setters
+
     public int getSeason_id() { return season_id; }
     public int getHotel_id() { return hotel_id; }
     public LocalDate getStart_date() { return start_date; }
     public LocalDate getEnd_date() { return end_date; }
-
-    // Setters
     public void setSeason_id(int season_id) { this.season_id = season_id; }
     public void setHotel_id(int hotel_id) { this.hotel_id = hotel_id; }
     public void setStart_date(LocalDate start_date) { this.start_date = start_date; }

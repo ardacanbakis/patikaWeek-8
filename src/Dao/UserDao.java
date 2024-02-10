@@ -89,8 +89,6 @@ public class UserDao {
         obj.setRole(rs.getString("role"));
         return obj;
     }
-
-
     public boolean delete(int selectedUserId) {
         String query = "DELETE FROM users WHERE user_id = ?";
         try {
@@ -102,6 +100,4 @@ public class UserDao {
         }
         return true;
     }
-
-
 }

@@ -3,10 +3,7 @@ package Entity;
 public class Pension {
     private int pension_id;
     private int hotel_id;
-    private PensionType type; // Use the PensionType enum
-
-    public Pension() {
-    }
+    private PensionType type;
 
     public Pension(int pension_id, int hotel_id, PensionType type) {
         this.pension_id = pension_id;
@@ -28,12 +25,8 @@ public class Pension {
     // Getters and Setters
     public int getPension_id() { return pension_id; }
     public void setPension_id(int pension_id) { this.pension_id = pension_id; }
-
     public int getHotel_id() { return hotel_id; }
     public void setHotel_id(int hotel_id) { this.hotel_id = hotel_id; }
-
     public PensionType getType() { return type; }
     public void setType(PensionType type) { this.type = type; }
-
-
 }
